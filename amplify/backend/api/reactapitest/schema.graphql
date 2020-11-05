@@ -1,0 +1,85 @@
+type Like @model{
+  id: ID!
+  post: Post @connection (name: "post_like")
+  chef: Chef @connection (name: "like_chef")
+}
+
+type Stash @model{
+  id: ID!
+  recipe: Recipe @connection (name: "recipe_stash")
+  chef: Chef @connection (name: "stash_chef")
+}
+
+type Comment @model{
+  id: ID!
+  text: String!
+  post: Post @connection (name: "post_comment")
+  chef: Chef @connection (name: "comment_chef")
+}
+
+type Tip @model{
+  id: ID!
+  text: String!
+  remake_post: Post @connection (name: "remake_tip")
+  post: Post @connection (name: "post_tip")
+  recipe: Recipe @connection (name: "recipe_tip")
+  chef: Chef @connection (name: "tip_chef")
+}
+
+type Follow @model{
+  id: ID!
+  chef_follow: Chef @connection (name: "chef_follow")
+  follow_chef: Chef @connection (name: "follow_chef")
+}
+
+type Ingredient {
+  type: String!
+  quantity: Int!
+}
+
+type Step {
+  step: String!
+}
+
+type Recipe @model{
+  id: ID!
+  title: String!
+  image_key: String!
+  serves: Int!
+  cook_time: Int!
+  ingredients: [Ingredient]!
+  procedure: [Step]!
+  post: Post @connection (name: "post_recipe")
+  chef: Chef @connection (name: "chef_recipe")
+  recipe_tips: [Tip] @connection (name: "recipe_tip")
+  stashes: Stash @connection (name: "recipe_stash")
+}
+
+type Post @model @key(name: "postsByType", fields: ["type"], queryField: "postsByType"){
+  id: ID!
+  title: String!
+  type: String!
+  caption: String!
+  image_key: String!
+  recipe: Recipe @connection (name: "post_recipe")
+  chef: Chef @connection (name: "chef_post")
+  comments: [Comment] @connection (name: "post_comment")
+  likes: [Like] @connection (name: "post_like")
+  remake_tip: Tip @connection (name: "remake_tip")
+  tips: [Tip] @connection (name: "post_tip")
+}
+
+type Chef @model{
+  id: ID!
+  username: String!
+  image_key: String!
+  biography: String!
+  posts: [Post] @connection (name: "chef_post")
+  recipes: [Recipe] @connection (name: "chef_recipe")
+  following: [Follow] @connection (name: "chef_follow")
+  followers: [Follow] @connection (name: "follow_chef")
+  tips: [Tip] @connection (name: "tip_chef")
+  comments: [Comment] @connection (name: "comment_chef")
+  likes: [Like] @connection (name: "like_chef")
+  stashes: [Stash] @connection (name: "stash_chef")
+}
